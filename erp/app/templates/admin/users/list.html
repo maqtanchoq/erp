@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}Foydalanuvchilar - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h1 class="admin-title">
+                <i class="fas fa-users"></i> Foydalanuvchilar
+            </h1>
+            <a href="{% url 'admin_user_add' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Yangi foydalanuvchi
+            </a>
+        </div>
+    </div>
+    
+    <!-- Search and Filter -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card admin-card">
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" name="q" class="form-control" placeholder="Qidirish..." value="{{ request.GET.q|default:'' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="is_staff" class="form-select">
+                                <option value="">Barcha turlar</option>
+                                <option value="true" {% if request.GET.is_staff == 'true' %}selected{% endif %}>Admin</option>
+                                <option value="false" {% if request.GET.is_staff == 'false' %}selected{% endif %}>Oddiy foydalanuvchi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="is_active" class="form-select">
+                                <option value="">Barcha holatlar</option>
+                                <option value="true" {% if request.GET.is_active == 'true' %}selected{% endif %}>Faol</option>
+                                <option value="false" {% if request.GET.is_active == 'false' %}selected{% endif %}>Nofaol</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-filter"></i> Filtrlash
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Users Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card admin-card">
+                <div class="card-header admin-card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-users"></i> Foydalanuvchilar ro'yxati
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Ism</th>
+                                    <th>Ro'yxatdan o'tgan</th>
+                                    <th>Status</th>
+                                    <th>Turi</th>
+                                    <th>Amallar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.first_name }} {{ user.last_name }}</td>
+                                    <td>{{ user.date_joined|date:"d.m.Y" }}</td>
+                                    <td>
+                                        {% if user.is_active %}
+                                            <span class="badge bg-success">Faol</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Nofaol</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if user.is_staff %}
+                                            <span class="badge bg-primary">Admin</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Foydalanuvchi</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{% url 'admin_user_edit' user.id %}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'admin_user_delete' user.id %}" class="btn btn-sm btn-danger" onclick="return confirmDelete(event, 'Foydalanuvchini o\'chirmoqchimisiz?')">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center py-4">
+                                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                        <p class="mb-0">Foydalanuvchilar topilmadi</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    {% if users.has_other_pages %}
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if users.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.is_staff %}&is_staff={{ request.GET.is_staff }}{% endif %}{% if request.GET.is_active %}&is_active={{ request.GET.is_active }}{% endif %}" aria-label="First">
+                                        <span aria-hidden="true">&laquo;&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ users.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.is_staff %}&is_staff={{ request.GET.is_staff }}{% endif %}{% if request.GET.is_active %}&is_active={{ request.GET.is_active }}{% endif %}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            
+                            {% for i in users.paginator.page_range %}
+                                {% if users.number == i %}
+                                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                                {% elif i > users.number|add:'-3' and i < users.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.is_staff %}&is_staff={{ request.GET.is_staff }}{% endif %}{% if request.GET.is_active %}&is_active={{ request.GET.is_active }}{% endif %}">{{ i }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if users.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ users.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.is_staff %}&is_staff={{ request.GET.is_staff }}{% endif %}{% if request.GET.is_active %}&is_active={{ request.GET.is_active }}{% endif %}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ users.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.is_staff %}&is_staff={{ request.GET.is_staff }}{% endif %}{% if request.GET.is_active %}&is_active={{ request.GET.is_active }}{% endif %}" aria-label="Last">
+                                        <span aria-hidden="true">&raquo;&raquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

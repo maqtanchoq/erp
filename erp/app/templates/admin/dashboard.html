@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Sanjarbek{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="admin-title mb-4">
+                <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+            </h1>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0">{{ users_count }}</h3>
+                        <p class="mb-0 text-white-50">Foydalanuvchilar</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <a href="{% url 'admin_users' %}" class="text-white">
+                        <i class="fas fa-arrow-right"></i> Batafsil
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card" style="background: var(--success-gradient);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0">{{ products_count }}</h3>
+                        <p class="mb-0 text-white-50">Mahsulotlar</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <a href="{% url 'admin_products' %}" class="text-white">
+                        <i class="fas fa-arrow-right"></i> Batafsil
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card" style="background: var(--warning-gradient);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0">{{ orders_count }}</h3>
+                        <p class="mb-0 text-white-50">Buyurtmalar</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <a href="{% url 'admin_orders' %}" class="text-white">
+                        <i class="fas fa-arrow-right"></i> Batafsil
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card" style="background: var(--secondary-gradient);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0">{{ categories_count }}</h3>
+                        <p class="mb-0 text-white-50">Kategoriyalar</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <a href="{% url 'admin_categories' %}" class="text-white">
+                        <i class="fas fa-arrow-right"></i> Batafsil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card admin-card">
+                <div class="card-header admin-card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shopping-cart"></i> So'nggi buyurtmalar
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Mijoz</th>
+                                    <th>Sana</th>
+                                    <th>Summa</th>
+                                    <th>Holat</th>
+                                    <th>Amallar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in recent_orders %}
+                                <tr>
+                                    <td>#{{ order.id }}</td>
+                                    <td>{{ order.user.username }}</td>
+                                    <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                                    <td>{{ order.total_amount }} so'm</td>
+                                    <td>
+                                        <span class="badge bg-{{ order.status|lower }}">
+                                            {{ order.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'admin_order_detail' order.id %}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <i class="fas fa-shopping-cart fa-2x text-muted mb-3"></i>
+                                        <p class="mb-0">Hozircha buyurtmalar yo'q</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if recent_orders %}
+                    <div class="text-end mt-3">
+                        <a href="{% url 'admin_orders' %}" class="btn btn-primary">
+                            <i class="fas fa-list"></i> Barcha buyurtmalar
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Users and Products -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card admin-card h-100">
+                <div class="card-header admin-card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-users"></i> So'nggi foydalanuvchilar
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Sana</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in recent_users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.date_joined|date:"d.m.Y" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4">
+                                        <i class="fas fa-users fa-2x text-muted mb-3"></i>
+                                        <p class="mb-0">Hozircha foydalanuvchilar yo'q</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if recent_users %}
+                    <div class="text-end mt-3">
+                        <a href="{% url 'admin_users' %}" class="btn btn-primary">
+                            <i class="fas fa-list"></i> Barcha foydalanuvchilar
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card admin-card h-100">
+                <div class="card-header admin-card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-box"></i> So'nggi mahsulotlar
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nomi</th>
+                                    <th>Narxi</th>
+                                    <th>Kategoriya</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in recent_products %}
+                                <tr>
+                                    <td>{{ product.id }}</td>
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ product.price }} so'm</td>
+                                    <td>{{ product.category.name }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4">
+                                        <i class="fas fa-box fa-2x text-muted mb-3"></i>
+                                        <p class="mb-0">Hozircha mahsulotlar yo'q</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if recent_products %}
+                    <div class="text-end mt-3">
+                        <a href="{% url 'admin_products' %}" class="btn btn-primary">
+                            <i class="fas fa-list"></i> Barcha mahsulotlar
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

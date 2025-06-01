@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Buyurtmalar ro‘yxati – Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <h1 class="mb-4"><i class="fas fa-shopping-cart"></i> Buyurtmalar</h1>
+
+  <form method="get" class="row g-2 mb-4">
+    <div class="col-md-4">
+      <input
+        type="text"
+        name="q"
+        value="{{ request.GET.q|default:'' }}"
+        class="form-control"
+        placeholder="Qidirish: foydalanuvchi, email yoki ID">
+    </div>
+    <div class="col-md-3">
+      <select name="status" class="form-select">
+        <option value="">— Barchasi —</option>
+        {% for key,label in Order.STATUS_CHOICES %}
+          <option value="{{ key }}" {% if request.GET.status == key %}selected{% endif %}>
+            {{ label }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-primary w-100">
+        <i class="fas fa-filter"></i> Filtrlash
+      </button>
+    </div>
+  </form>
+
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Foydalanuvchi</th>
+          <th>Status</th>
+          <th>Sana</th>
+          <th>Jami</th>
+          <th>Amal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+          <tr>
+            <td>#{{ order.id }}</td>
+            <td>
+              {{ order.user.username }}<br>
+              <small class="text-muted">{{ order.user.email }}</small>
+            </td>
+            <td>{{ order.get_status_display }}</td>
+            <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+            <td>{{ order.total_amount|floatformat:2 }} so‘m</td>
+            <td>
+              <a href="{% url 'admin_order_detail' order.id %}"
+                 class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-eye"></i> Ko‘rish
+              </a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-center text-muted">
+              Hech qanday buyurtma topilmadi.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if orders.has_other_pages %}
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        {% if orders.has_previous %}
+          <li class="page-item">
+            <a class="page-link"
+               href="?page={{ orders.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}"
+               aria-label="Previous">&laquo;</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+        {% endif %}
+        {% for num in orders.paginator.page_range %}
+          {% if num == orders.number %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% elif num >= orders.number|add:-2 and num <= orders.number|add:2 %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">
+                {{ num }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+        {% if orders.has_next %}
+          <li class="page-item">
+            <a class="page-link"
+               href="?page={{ orders.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}"
+               aria-label="Next">&raquo;</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+</div>
+{% endblock %}

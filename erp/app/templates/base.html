@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sanjarbek - Zamonaviy Online Do'kon{% endblock %}</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" as="style">
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <!-- Meta tags -->
+    <meta name="description" content="Sanjarbek - Zamonaviy online do'kon. Eng yaxshi mahsulotlar va xizmatlar.">
+    <meta name="keywords" content="online do'kon, mahsulotlar, xarid, Sanjarbek">
+    <meta name="author" content="Sanjarbek">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); z-index: 9999; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 600;">
+        <div class="text-center">
+            <div class="loading-spinner mb-3" style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white;"></div>
+            <div>Yuklanmoqda...</div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-store"></i> Sanjarbek
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="fas fa-home"></i> Bosh sahifa
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'product_list' %}">
+                            <i class="fas fa-shopping-bag"></i> Mahsulotlar
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link position-relative" href="{% url 'cart_view' %}">
+                                <i class="fas fa-shopping-cart"></i> Savatcha
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">
+                                    0
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'my_orders' %}">
+                                <i class="fas fa-list-alt"></i> Buyurtmalarim
+                            </a>
+                        </li>
+                        {% if user.is_staff %}
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" href="{% url 'admin_dashboard' %}">
+                                    <i class="fas fa-cogs"></i> Admin Panel
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt"></i> Chiqish
+                                </a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt"></i> Kirish
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">
+                                <i class="fas fa-user-plus"></i> Ro'yxatdan o'tish
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="btn btn-primary" style="position: fixed; bottom: 30px; right: 30px; border-radius: 50%; width: 60px; height: 60px; display: none; z-index: 1000; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="gradient-text mb-3">
+                        <i class="fas fa-store"></i> Sanjarbek Online Do'kon
+                    </h5>
+                    <p class="mb-3">Sifatli mahsulotlar va mukammal xizmat ko'rsatish - bizning asosiy maqsadimiz. Har bir mijozimiz uchun eng yaxshi tajribani taqdim etamiz.</p>
+                    <div class="social-links">
+                        <a href="#" class="text-light me-3" title="Facebook">
+                            <i class="fab fa-facebook fa-2x"></i>
+                        </a>
+                        <a href="#" class="text-light me-3" title="Instagram">
+                            <i class="fab fa-instagram fa-2x"></i>
+                        </a>
+                        <a href="#" class="text-light me-3" title="Telegram">
+                            <i class="fab fa-telegram fa-2x"></i>
+                        </a>
+                        <a href="#" class="text-light" title="YouTube">
+                            <i class="fab fa-youtube fa-2x"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="mb-3">Tezkor havolalar</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="{% url 'home' %}" class="text-light text-decoration-none hover-lift">
+                                <i class="fas fa-home"></i> Bosh sahifa
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'product_list' %}" class="text-light text-decoration-none hover-lift">
+                                <i class="fas fa-shopping-bag"></i> Mahsulotlar
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="text-light text-decoration-none hover-lift">
+                                <i class="fas fa-info-circle"></i> Biz haqimizda
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="text-light text-decoration-none hover-lift">
+                                <i class="fas fa-phone"></i> Aloqa
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="mb-3">Aloqa ma'lumotlari</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt"></i> Toshkent, O'zbekiston
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone"></i> +998 90 123 45 67
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-envelope"></i> info@Sanjarbek.uz
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-clock"></i> 24/7 xizmat
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2024 Sanjarbek Online Do'kon. Barcha huquqlar himoyalangan.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                   
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    <!-- Additional Scripts -->
+    <script>
+        // Hide loading screen
+        window.addEventListener('load', function() {
+            const loadingScreen = document.getElementById('loading-screen');
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        });
+        
+        // Back to top button
+        const backToTopBtn = document.getElementById('backToTop');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backToTopBtn.style.display = 'block';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        });
+        
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+       
+        
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

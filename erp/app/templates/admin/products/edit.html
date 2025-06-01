@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Mahsulotni tahrirlash - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4"><i class="fas fa-edit"></i> Mahsulotni tahrirlash</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_name" class="form-label">Nomi</label>
+            <input type="text" name="name" id="id_name" class="form-control" value="{{ form.name.value|default_if_none:'' }}">
+            {% if form.name.errors %}
+                <div class="text-danger">{{ form.name.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_price" class="form-label">Narxi</label>
+            <input type="number" name="price" id="id_price" class="form-control" value="{{ form.price.value|default_if_none:'' }}" step="0.01" min="0">
+            {% if form.price.errors %}
+                <div class="text-danger">{{ form.price.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_category" class="form-label">Kategoriya</label>
+            <select name="category" id="id_category" class="form-select">
+                <option value="">Kategoriya tanlang</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if form.category.value|stringformat:"s" == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            {% if form.category.errors %}
+                <div class="text-danger">{{ form.category.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_in_stock" class="form-label">Mavjudligi</label>
+            <select name="in_stock" id="id_in_stock" class="form-select">
+                <option value="true" {% if form.in_stock.value == True or form.in_stock.value == 'true' %}selected{% endif %}>Mavjud</option>
+                <option value="false" {% if form.in_stock.value == False or form.in_stock.value == 'false' %}selected{% endif %}>Mavjud emas</option>
+            </select>
+            {% if form.in_stock.errors %}
+                <div class="text-danger">{{ form.in_stock.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="id_image" class="form-label">Rasm</label>
+            {% if product.image %}
+                <div class="mb-2">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 150px;">
+                </div>
+            {% endif %}
+            <input type="file" name="image" id="id_image" class="form-control">
+            {% if form.image.errors %}
+                <div class="text-danger">{{ form.image.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Saqlash
+        </button>
+        <a href="{% url 'app:admin_products' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Bekor qilish
+        </a>
+    </form>
+</div>
+{% endblock %}

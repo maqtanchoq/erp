@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Admin Panel{% endblock %}</title>
+  {% load static %}
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+</head>
+<body class="d-flex flex-column vh-100">
+
+  <!-- Top Navbar -->
+  <nav class="navbar navbar-light bg-white shadow-sm">
+    <div class="container-fluid">
+      <button class="btn btn-outline-primary d-lg-none" type="button"
+              data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
+        <i class="fas fa-bars"></i>
+      </button>
+      <a class="navbar-brand ms-2" href="{% url 'admin_dashboard' %}">
+        <i class="fas fa-store-alt"></i> Sanjarbek Admin
+      </a>
+      <div class="dropdown ms-auto">
+        <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
+          <i class="fas fa-user-circle"></i> {{ request.user.username }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="{% url 'logout' %}">
+            <i class="fas fa-sign-out-alt"></i> Chiqish
+          </a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="flex-grow-1 d-flex overflow-hidden">
+    <!-- Sidebar -->
+    <div class="offcanvas offcanvas-start d-lg-block bg-dark text-white" tabindex="-1" id="offcanvasSidebar">
+      <div class="offcanvas-header d-lg-none">
+        <h5 class="offcanvas-title">Sanjarbek</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+      </div>
+      <div class="offcanvas-body p-0 d-flex flex-column">
+        <nav class="nav flex-column">
+          <a href="{% url 'admin_dashboard' %}" class="nav-link {% if request.path == '/admin/dashboard/' %}active{% endif %}">
+            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+          </a>
+          <a href="{% url 'admin_users' %}" class="nav-link {% if 'users' in request.path %}active{% endif %}">
+            <i class="fas fa-users me-2"></i> Foydalanuvchilar
+          </a>
+          <a href="{% url 'admin_products' %}" class="nav-link {% if 'products' in request.path %}active{% endif %}">
+            <i class="fas fa-box me-2"></i> Mahsulotlar
+          </a>
+          <a href="{% url 'admin_categories' %}" class="nav-link {% if 'categories' in request.path %}active{% endif %}">
+            <i class="fas fa-tags me-2"></i> Kategoriyalar
+          </a>
+          <a href="{% url 'admin_orders' %}" class="nav-link {% if 'orders' in request.path %}active{% endif %}">
+            <i class="fas fa-shopping-cart me-2"></i> Buyurtmalar
+          </a>
+          <a href="{% url 'home' %}" class="nav-link">
+            <i class="fas fa-home me-2"></i> Asosiy sayt
+          </a>
+        </nav>
+        <div class="mt-auto p-3 border-top border-secondary">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-user-circle fa-2x me-2"></i>
+            <div>
+              <div>{{ request.user.username }}</div>
+              <small class="text-muted">Administrator</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-fill overflow-auto bg-light">
+      <div class="container-fluid py-4">
+        <!-- Flash Messages -->
+        {% if messages %}
+          {% for msg in messages %}
+            <div class="alert alert-{{ msg.tags }} alert-dismissible fade show">
+              <i class="fas fa-{{ msg.tags == 'success' and 'check-circle' or msg.tags == 'warning' and 'exclamation-triangle' or 'info-circle' }}"></i>
+              {{ msg }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+      </div>
+      <footer class="bg-white text-center py-3 shadow-sm">
+        &copy; {{ now|"date:'Y'" }} Sanjarbek. All rights reserved.
+      </footer>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+  <script src="{% static 'js/admin.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Foydalanuvchini o'chirish - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h4>
+                        <i class="fas fa-trash-alt"></i> Foydalanuvchini o'chirishni tasdiqlang
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p>Haqiqatan ham <strong>{{ user.username }}</strong> foydalanuvchini o'chirmoqchimisiz?</p>
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'admin_users' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Bekor qilish
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> O'chirish
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

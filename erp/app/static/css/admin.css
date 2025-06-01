@@ -1,0 +1,140 @@
+:root {
+  /* Ranglar va o‘lchamlar */
+  --card-radius: 0.75rem;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --transition-speed: 0.3s;
+  --stats-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  --warning-gradient: linear-gradient(135deg, #fbc531 0%, #fa8231 100%);
+  --secondary-gradient: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+}
+
+/* ===== STATS CARDS ===== */
+.stats-card {
+  background: var(--stats-gradient);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: 1.5rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.stats-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+.stats-card .stats-icon {
+  font-size: 2.5rem;
+  opacity: 0.85;
+}
+
+.stats-card p {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.75);
+}
+
+/* Gradient overrides */
+.stats-card[style*="--success-gradient"]    { background: var(--success-gradient); }
+.stats-card[style*="--warning-gradient"]    { background: var(--warning-gradient); }
+.stats-card[style*="--secondary-gradient"]  { background: var(--secondary-gradient); }
+
+/* Link “Batafsil” */
+.stats-card a {
+  font-weight: 600;
+  text-decoration: none;
+  color: #fff;
+  opacity: 0.9;
+  transition: opacity var(--transition-speed);
+}
+.stats-card a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* ===== ADMIN TABLE CARDS ===== */
+.admin-card {
+  border: none;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+.admin-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+}
+
+.admin-card-header {
+  background: #fff;
+  border-bottom: 2px solid var(--stats-gradient);
+  color: #333;
+  font-weight: 600;
+}
+
+/* ===== TABLE STYLES ===== */
+.admin-table {
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.admin-table thead th {
+  background: #f8f9fa;
+  border-bottom: none;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+}
+
+.admin-table tbody tr {
+  background: #fff;
+  transition: background var(--transition-speed);
+}
+.admin-table tbody tr:hover {
+  background: rgba(102,126,234,0.1);
+}
+
+.admin-table td, .admin-table th {
+  border: none;
+  padding: 0.75rem 1rem;
+}
+
+/* Badges in table */
+.admin-table .badge {
+  padding: 0.4em 0.8em;
+  font-size: 0.85em;
+  text-transform: capitalize;
+}
+
+/* ===== RESPONSIVE GRID ===== */
+/* 4 kolonkali kross-platform layout */
+.row-cols-xl-4 {
+  --bs-columns: 4;
+}
+@media (max-width: 1199.98px) {
+  .row-cols-xl-4 { --bs-columns: 3; }
+}
+@media (max-width: 991.98px) {
+  .row-cols-xl-4 { --bs-columns: 2; }
+}
+@media (max-width: 575.98px) {
+  .row-cols-xl-4 { --bs-columns: 1; }
+}
+
+/* ===== UMUMIY ===== */
+.admin-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #444;
+}
+
+.btn-primary {
+  background: var(--stats-gradient);
+  border: none;
+  transition: background var(--transition-speed), transform var(--transition-speed);
+}
+.btn-primary:hover {
+  background: #5a67d8;
+  transform: translateY(-2px);
+}

@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}Foydalanuvchini tahrirlash - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="admin-title">
+                <i class="fas fa-user-edit"></i> Foydalanuvchini tahrirlash
+            </h1>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="card admin-card">
+                <div class="card-header admin-card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-edit"></i> {{ user.username }} - ma'lumotlarini tahrirlash
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="admin-form">
+                        {% csrf_token %}
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="username" class="form-label">Username *</label>
+                                <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="username" name="username" value="{{ form.username.value|default:user.username }}" required>
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.username.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" id="email" name="email" value="{{ form.email.value|default:user.email }}" required>
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.email.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="first_name" class="form-label">Ism</label>
+                                <input type="text" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" id="first_name" name="first_name" value="{{ form.first_name.value|default:user.first_name }}">
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.first_name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="last_name" class="form-label">Familiya</label>
+                                <input type="text" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" id="last_name" name="last_name" value="{{ form.last_name.value|default:user.last_name }}">
+                                {% if form.last_name.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.last_name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if form.is_active.value|default:user.is_active %}checked{% endif %}>
+                                    <label class="form-check-label" for="is_active">Faol</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="is_staff" name="is_staff" {% if form.is_staff.value|default:user.is_staff %}checked{% endif %}>
+                                    <label class="form-check-label" for="is_staff">Admin huquqlari</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <h5 class="mb-3">Parolni o'zgartirish</h5>
+                        <p class="text-muted mb-3">Parolni o'zgartirish uchun quyidagi maydonlarni to'ldiring. Agar parolni o'zgartirmoqchi bo'lmasangiz, maydonlarni bo'sh qoldiring.</p>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="password1" class="form-label">Yangi parol</label>
+                                <input type="password" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" id="password1" name="password1">
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.password1.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    Parol kamida 8 ta belgidan iborat bo'lishi kerak.
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="password2" class="form-label">Yangi parolni tasdiqlash</label>
+                                <input type="password" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" id="password2" name="password2">
+                                {% if form.password2.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.password2.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'admin_users' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Orqaga
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Saqlash
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

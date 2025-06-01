@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Buyurtma #{{ order.id }} batafsil{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <h1 class="mb-4"><i class="fas fa-receipt"></i> Buyurtma #{{ order.id }}</h1>
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h5>Foydalanuvchi</h5>
+      <p>
+        {{ order.user.username }}<br>
+        <a href="mailto:{{ order.user.email }}">{{ order.user.email }}</a>
+      </p>
+    </div>
+    <div class="col-md-6">
+      <h5>Ma'lumotlar</h5>
+      <p>
+        Status: <strong>{{ order.get_status_display }}</strong><br>
+        Yaralgan: {{ order.created_at|date:"Y-m-d H:i" }}<br>
+        Jami: <strong>{{ order.total_amount|floatformat:2 }} soʻm</strong>
+      </p>
+    </div>
+  </div>
+  <h5 class="mt-4">Buyurtma tarkibi</h5>
+  <div class="table-responsive">
+    <table class="table table-bordered align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Mahsulot</th><th class="text-center">Miqdor</th>
+          <th class="text-end">Narxi</th><th class="text-end">Jami</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in order.items.all %}
+          <tr>
+            <td>{{ item.product.name }}</td>
+            <td class="text-center">{{ item.quantity }}</td>
+            <td class="text-end">{{ item.price|floatformat:2 }}</td>
+            <td class="text-end">{{ item.get_subtotal|floatformat:2 }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="text-center text-muted">Hech qanday mahsulot yo‘q.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-4">
+    <a href="{% url 'admin_orders' %}" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Orqaga
+    </a>
+  </div>
+</div>
+{% endblock %}

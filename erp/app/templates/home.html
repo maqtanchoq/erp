@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container hero-content">
+        <h1 class="hero-title">Sanjarbek Online Do'konga <br><span class="gradient-text">Xush Kelibsiz!</span></h1>
+        <p class="hero-subtitle">Eng yaxshi mahsulotlarni kashf eting va zamonaviy xarid tajribasidan bahramand bo'ling</p>
+        <a href="{% url 'product_list' %}" class="hero-btn">
+            <i class="fas fa-shopping-bag"></i> Xarid qilishni boshlash
+        </a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <div class="stats-card">
+                        <i class="fas fa-shipping-fast stats-icon float-animation"></i>
+                        <h5 class="mt-3 mb-2">Tez yetkazib berish</h5>
+                        <p class="mb-0">24 soat ichida yetkazib beramiz</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <div class="stats-card" style="background: var(--success-gradient);">
+                        <i class="fas fa-shield-alt stats-icon float-animation"></i>
+                        <h5 class="mt-3 mb-2">Xavfsiz to'lov</h5>
+                        <p class="mb-0">To'lovlaringiz 100% himoyalangan</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="text-center">
+                    <div class="stats-card" style="background: var(--warning-gradient);">
+                        <i class="fas fa-headset stats-icon float-animation"></i>
+                        <h5 class="mt-3 mb-2">24/7 qo'llab-quvvatlash</h5>
+                        <p class="mb-0">Har doim sizning xizmatingizdamiz</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="gradient-text mb-3">
+                <i class="fas fa-tags"></i> Kategoriyalar bo'yicha xarid qiling
+            </h2>
+            <p class="lead text-muted">Turli xil kategoriyalardagi eng yaxshi mahsulotlarni toping</p>
+        </div>
+        <div class="row">
+            {% for category in categories %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="category-card">
+                    <i class="fas fa-tag category-icon"></i>
+                    <h4 class="fw-bold mb-3">{{ category.name }}</h4>
+                    <p class="mb-4">{{ category.description|default:"Ajoyib mahsulotlar sizni kutmoqda" }}</p>
+                    <a href="{% url 'product_list' %}?category={{ category.id }}" class="btn btn-light btn-lg hover-lift">
+                        <i class="fas fa-arrow-right"></i> Ko'rish
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="glass-effect p-5 rounded">
+                    <i class="fas fa-info-circle fa-3x text-primary mb-3"></i>
+                    <h4>Kategoriyalar tez orada qo'shiladi</h4>
+                    <p class="text-muted">Admin panel orqali kategoriyalar qo'shing</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="gradient-text mb-3">
+                <i class="fas fa-star"></i> Tavsiya etilgan mahsulotlar
+            </h2>
+            <p class="lead text-muted">Eng mashhur va sifatli mahsulotlarimiz</p>
+        </div>
+        <div class="product-grid">
+            {% for product in featured_products %}
+            <div class="product-item">
+                <div class="card product-card h-100">
+                    <div class="position-relative overflow-hidden">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top product-image" alt="{{ product.name }}">
+                        {% else %}
+                            <div class="card-img-top product-image d-flex align-items-center justify-content-center" style="background: var(--primary-gradient);">
+                                <i class="fas fa-image fa-4x text-white"></i>
+                            </div>
+                        {% endif %}
+                        <div class="product-overlay">
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-light btn-lg">
+                                <i class="fas fa-eye"></i> Tafsilotlar
+                            </a>
+                        </div>
+                        <span class="badge-custom position-absolute top-0 end-0 m-3">
+                            <i class="fas fa-star"></i> TOP
+                        </span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-bold">{{ product.name }}</h5>
+                        <p class="card-text text-muted flex-grow-1">{{ product.description|truncatewords:15 }}</p>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="price-tag">
+                                    <i class="fas fa-dollar-sign"></i> {{ product.price }} so'm
+                                </span>
+                                <a href="{% url 'product_detail' product.id %}" class="btn btn-primary hover-lift">
+                                    <i class="fas fa-shopping-cart"></i> Xarid
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="glass-effect p-5 rounded">
+                    <i class="fas fa-box-open fa-3x text-warning mb-3"></i>
+                    <h4>Mahsulotlar tez orada qo'shiladi</h4>
+                    <p class="text-muted">Admin panel orqali mahsulotlar qo'shing</p>
+                    {% if user.is_staff %}
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Mahsulot qo'shish
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if featured_products %}
+        <div class="text-center mt-5">
+            <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg hover-lift">
+                <i class="fas fa-shopping-bag"></i> Barcha mahsulotlarni ko'rish
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-5" style="background: var(--primary-gradient);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 text-white">
+                <h3 class="mb-3">Yangiliklar va chegirmalardan xabardor bo'ling!</h3>
+                <p class="mb-0">Email manzilingizni qoldiring va eng so'nggi yangiliklar va maxsus takliflardan birinchi bo'lib xabardor bo'ling.</p>
+            </div>
+            <div class="col-md-6">
+                <form class="d-flex gap-3 mt-3 mt-md-0">
+                    <input type="email" class="form-control" placeholder="Email manzilingiz" required>
+                    <button type="submit" class="btn btn-light hover-lift">
+                        <i class="fas fa-paper-plane"></i> Obuna
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Newsletter form
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = this.querySelector('input[type="email"]').value;
+        if (email) {
+            SanjarbekShop.showNotification('Email manzil saqlandi! Tez orada yangiliklar yuboramiz.', 'success');
+            this.reset();
+        }
+    });
+    
+    // Product card animations
+    const productCards = document.querySelectorAll('.product-card');
+    productCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+    });
+</script>
+{% endblock %}

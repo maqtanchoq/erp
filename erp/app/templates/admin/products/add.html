@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}Yangi mahsulot - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="admin-title">
+                <i class="fas fa-plus"></i> Yangi mahsulot qo'shish
+            </h1>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="card admin-card">
+                <div class="card-header admin-card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-box"></i> Mahsulot ma'lumotlari
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" class="admin-form">
+                        {% csrf_token %}
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <label for="name" class="form-label">Nomi *</label>
+                                <input type="text" class="form-control {% if form.name.errors %}is-invalid{% endif %}" id="name" name="name" value="{{ form.name.value|default:'' }}" required>
+                                {% if form.name.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                <label for="price" class="form-label">Narxi *</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control {% if form.price.errors %}is-invalid{% endif %}" id="price" name="price" value="{{ form.price.value|default:'' }}" min="0" step="0.01" required>
+                                    <span class="input-group-text">so'm</span>
+                                    {% if form.price.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.price.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Kategoriya *</label>
+                            <select class="form-select {% if form.category.errors %}is-invalid{% endif %}" id="category" name="category" required>
+                                <option value="">Kategoriyani tanlang</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if form.category.value|stringformat:"i" == category.id|stringformat:"i" %}selected{% endif %}>{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form.category.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.category.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Tavsif</label>
+                            <textarea class="form-control {% if form.description.errors %}is-invalid{% endif %}" id="description" name="description" rows="4">{{ form.description.value|default:'' }}</textarea>
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.description.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Rasm</label>
+                            <input type="file" class="form-control {% if form.image.errors %}is-invalid{% endif %}" id="image" name="image" accept="image/*">
+                            {% if form.image.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.image.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">
+                                JPG, PNG yoki GIF formatida rasm yuklang.
+                            </div>
+                        </div>
+                        
+                        {# stock – required integer #}
+  <div class="mb-3">
+    <label for="stock" class="form-label">Ombordagi miqdor *</label>
+    <input
+      type="number"
+      name="stock"
+      id="stock"
+      class="form-control {% if form.stock.errors %}is-invalid{% endif %}"
+      value="{{ form.stock.value|default_if_none:'' }}"
+      min="0"
+      required>
+    {% if form.stock.errors %}
+      <div class="invalid-feedback">
+        {% for err in form.stock.errors %}{{ err }}{% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  {# in_stock – optional checkbox #}
+  <div class="form-check form-switch mb-3">
+    <input
+      class="form-check-input"
+      type="checkbox"
+      name="in_stock"
+      id="in_stock"
+      {% if form.in_stock.value %}checked{% endif %}>
+    <label class="form-check-label" for="in_stock">
+      Mavjud
+    </label>
+  </div>
+
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'admin_products' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Orqaga
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Saqlash
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Image preview
+    document.getElementById('image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Create preview if doesn't exist
+                let preview = document.getElementById('image-preview');
+                if (!preview) {
+                    preview = document.createElement('img');
+                    preview.id = 'image-preview';
+                    preview.className = 'img-thumbnail mt-2';
+                    preview.style.maxWidth = '200px';
+                    preview.style.maxHeight = '200px';
+                    document.getElementById('image').parentNode.appendChild(preview);
+                }
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %}
